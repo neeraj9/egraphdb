@@ -346,7 +346,7 @@ HTTP POST.
     "query": {
         "type": "index",
         "conditions" : [
-            {"key": "INR"
+            {"key": "INR",
              "key_type": "text",
              "index_name": "currency"},
             {"key": "tokyo",
