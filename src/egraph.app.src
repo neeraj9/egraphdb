@@ -1,0 +1,58 @@
+%%%-------------------------------------------------------------------
+%%% @author neerajsharma
+%%% @copyright (C) 2018, Neeraj Sharma
+%%% @doc
+%%%
+%%% @end
+%%%-------------------------------------------------------------------
+{application, egraph,
+ [
+  {description, "EGraph."},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications,
+   [
+    kernel,
+    stdlib,
+    sasl,
+    runtime_tools,  %% allow observer_backend
+    tools,  %% allow fprof and friends
+    lager,
+    cowboy,
+    compiler,
+    inets,
+    crypto,
+    asn1,
+    ssl,
+    jiffy,
+    jsx,  %% jsx is required by folsom_cowboy
+    folsom_cowboy,
+    folsom,
+    palma,
+    mongodb,
+    mysql,
+    cache,
+    eredis,
+    amqp_client,
+    fuse,
+    otter,
+    elarm,
+    os_mon,
+    syntax_tools,
+    riak_core,
+    cuttlefish
+   ]},
+  {included_applications, [
+                           erlcron,
+                           nested,
+                           dotto,
+                           qdate,
+                           erlsom,
+                           xxhash
+                          ]},
+  {mod, {egraph_app, []}},
+  {env, []},
+  {maintainers, ["Platform Team"]},
+  {licenses, []},
+  {links, []}
+ ]}.

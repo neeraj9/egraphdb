@@ -1,0 +1,21 @@
+[Unit]
+Description=egraph service
+After=network.target auditd.service
+ConditionPathExists=!/etc/egraph/egraph_not_to_be_run
+
+[Service]
+EnvironmentFile=-/etc/default/egraph
+ExecStart=/opt/egraph/bin/egraph console -noinput +Bd
+#ExecReload=/bin/kill -HUP $MAINPID
+#KillSignal=SIGKILL
+#KillMode=process
+Restart=always
+RestartPreventExitStatus=255
+#Type=simple
+User=egraphuser
+Group=egraphuser
+LimitNOFILE=1000000
+
+[Install]
+WantedBy=multi-user.target
+Alias=egraph.service

@@ -1,0 +1,12 @@
+[Unit]
+Description=egraph server socket
+Before=egraph.service
+#Conflicts=kvstore.service
+ConditionPathExists=!/etc/egraph/egraph_not_to_be_run
+
+[Socket]
+ListenStream=9901
+Accept=yes
+
+[Install]
+WantedBy=sockets.target

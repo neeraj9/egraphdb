@@ -1,0 +1,12 @@
+Package: egraph
+Version: @VERSION@
+License: proprietary
+Section: base
+Maintainer: Neeraj Sharma <neeraj.sharma@alumni.iitg.ernet.in>
+Priority: optional
+Architecture: amd64
+Build-Depends: debhelper
+Depends: libcap2-bin, ntp
+Description: Graph Database
+  EGraph will detech anomalies and heal them.
+

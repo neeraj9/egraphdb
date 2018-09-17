@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# create a system user for the process,
+# modern useradd will add the default group too
+if [[ ! $(id egraphuser 2>/dev/null) ]] ;then
+    # create an egraph system account without creating home directory
+    /usr/sbin/useradd --system -M --home-dir /opt/egraph -s /bin/bash egraphuser
+fi
