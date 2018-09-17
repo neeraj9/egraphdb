@@ -259,20 +259,20 @@ CREATE TABLE `egraph_reindex_status` (
 -- higher compared to the timeout set for reader when waiting to
 -- perform read or write operation via sql pool.
 --
-CREATE TABLE `egraph_reindex_status_experimental` (
-  `index_table_name` text NOT NULL,
-  `index_name` text NOT NULL,
-  `index_type` text NOT NULL,
-  `is_reindexing` int(1) NOT NULL DEFAULT '0' COMMENT '0 when no-reindexing job running and 1 otherwise',
-  `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Datetime when the entry was last updated',
-  `min_data_updated_datetime` datetime NOT NULL COMMENT 'Min datetime of the last entry reindexed',
-  `max_data_updated_datetime` datetime NOT NULL COMMENT 'Max datetime of the last entry reindexed',
-  `limit_min_data_updated_datetime` datetime NOT NULL COMMENT 'Datetime of the last entry reindexed',
-  `num_rows_per_run` bigint NOT NULL DEFAULT '100000' COMMENT 'Number of rows to reindex per run',
-  `min_sec_per_run` bigint NOT NULL DEFAULT '20' COMMENT 'Minimum duration in seconds ensured for a single run, if completed faster then reindexer sleeps',
-  `version` int(4) NOT NULL DEFAULT '0' COMMENT 'contention resolution and for data',
-  PRIMARY KEY (`index_table_name`),
-  KEY `index_name` (`index_name`),
-  KEY `updated_datetime` (`updated_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- CREATE TABLE `egraph_reindex_status_experimental` (
+--   `index_table_name` text NOT NULL,
+--   `index_name` text NOT NULL,
+--   `index_type` text NOT NULL,
+--   `is_reindexing` int(1) NOT NULL DEFAULT '0' COMMENT '0 when no-reindexing job running and 1 otherwise',
+--   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Datetime when the entry was last updated',
+--   `min_data_updated_datetime` datetime NOT NULL COMMENT 'Min datetime of the last entry reindexed',
+--   `max_data_updated_datetime` datetime NOT NULL COMMENT 'Max datetime of the last entry reindexed',
+--   `limit_min_data_updated_datetime` datetime NOT NULL COMMENT 'Datetime of the last entry reindexed',
+--   `num_rows_per_run` bigint NOT NULL DEFAULT '100000' COMMENT 'Number of rows to reindex per run',
+--   `min_sec_per_run` bigint NOT NULL DEFAULT '20' COMMENT 'Minimum duration in seconds ensured for a single run, if completed faster then reindexer sleeps',
+--   `version` int(4) NOT NULL DEFAULT '0' COMMENT 'contention resolution and for data',
+--   PRIMARY KEY (`index_table_name`),
+--   KEY `index_name` (`index_name`),
+--   KEY `updated_datetime` (`updated_datetime`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
