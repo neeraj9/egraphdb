@@ -357,9 +357,9 @@ HTTP POST.
              "index_name": "water_percent"}
         ],
         "selected_paths":
-                       [ ["name""]
-                         ,["religions"]
-                         ,["geography", "water_percent"]
+                       [ ["name""],
+                         ["religions"],
+                         ["geography", "water_percent"]
                        ]
     }
 }
