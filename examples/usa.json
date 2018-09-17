@@ -1,0 +1,51 @@
+{
+    "key_data" : "usa",
+    "details" : {
+        "name": "USA",
+        "capital": "Washington, D.C.",
+        "capital_geolocation": {
+            "type": "Point",
+            "coordinates": [-77.016667, 38.883333]
+        },
+        "largest_city":"New York City",
+        "largest_citygeolocation": {
+            "type": "Point",
+            "coordinates": [-74, 40.716667]
+        },
+        "religions": ["Christianity",
+                      "Unaffiliated", "Unknown", "Jewish",
+                      "Muslim", "Buddhist", "Hindu",
+                      "Others"],
+        "declaration": "1776-07-04",
+        "confederation": "1781-03-01",
+        "geography": {
+            "total_area_sq_km": 9833520,
+            "water_percent": 6.97
+        },
+        "population": {
+            "population_2017": 325719178,
+            "density_sq_km": 32.8
+        },
+        "currency": "USD",
+        "currency_full": "United States Dollar",
+        "iso_3166_code": "US",
+        "calling_code": "+1"
+    },
+    "indexes" : {
+        "indexes" : [
+            ["currency"],
+            ["capital_geolocation"],
+            ["largest_citygeolocation"],
+            ["declaration"],
+            ["confederation"],
+            ["geography", "total_area_sq_km"],
+            ["geography", "water_percent"],
+            ["population", "density_sq_km"]
+        ],
+        "lowercase_indexes" : [
+            ["capital"],
+            ["largest_city"],
+            ["currency_full"]
+        ]
+    }
+}

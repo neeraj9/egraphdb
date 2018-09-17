@@ -1,0 +1,9 @@
+{
+    "source" : "india",
+    "destination" : "usa",
+    "details" : {
+        "distance_km": 13568,
+        "capital_flight_time_hours": 15.5,
+        "yearly_tourists": 1100000
+    }
+}

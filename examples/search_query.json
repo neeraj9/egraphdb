@@ -1,0 +1,21 @@
+{
+    "query": {
+        "type": "index",
+        "conditions" : [
+            {"key": "INR",
+             "key_type": "text",
+             "index_name": "currency"},
+            {"key": "tokyo",
+             "key_type": "text",
+             "index_name": "capital_lc__"},
+            {"key": [1.0, 50.0],
+             "key_type": "double",
+             "index_name": "water_percent"}
+        ],
+        "selected_paths":
+                       [ ["name"],
+                         ["religions"],
+                         ["geography", "water_percent"]
+                       ]
+    }
+}

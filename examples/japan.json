@@ -1,0 +1,50 @@
+{
+    "key_data" : "japan",
+    "details" : {
+        "name": "Japan",
+        "capital": "Tokyo",
+        "capital_geolocation": {
+            "type": "Point",
+            "coordinates": [139.766667, 35.683333]
+        },
+        "largest_city":"Tokyo",
+        "largest_citygeolocation": {
+            "type": "Point",
+            "coordinates": [139.766667, 35.683333]
+        },
+        "religions": ["Folk Shinto", "Buddhism",
+                      "Shinto sects", "Christianity",
+                      "Others"],
+        "meji_constitution": "1890-11-29",
+        "current_constitution": "1947-05-03",
+        "geography": {
+            "total_area_sq_km": 377972,
+            "water_percent": 0.8
+        },
+        "population": {
+            "population_2017": 126672000,
+            "density_sq_km": 336
+        },
+        "currency": "Yen",
+        "currency_full": "Yen",
+        "iso_3166_code": "JP",
+        "calling_code": "+81"
+    },
+    "indexes" : {
+        "indexes" : [
+            ["currency"],
+            ["capital_geolocation"],
+            ["largest_citygeolocation"],
+            ["meji_constitution"],
+            ["current_constitution"],
+            ["geography", "total_area_sq_km"],
+            ["geography", "water_percent"],
+            ["population", "density_sq_km"]
+        ],
+        "lowercase_indexes" : [
+            ["capital"],
+            ["largest_city"],
+            ["currency_full"]
+        ]
+    }
+}

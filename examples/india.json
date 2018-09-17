@@ -1,0 +1,50 @@
+{
+    "key_data" : "india",
+    "details" : {
+        "name": "India",
+        "capital": "New Delhi",
+        "capital_geolocation": {
+            "type": "Point",
+            "coordinates": [77.23, 28.61]
+        },
+        "largest_city":"Mumbai",
+        "largest_citygeolocation": {
+            "type": "Point",
+            "coordinates": [77.23, 28.61]
+        },
+        "religions": ["Hinduism", "Islam", "Christianity",
+                      "Sikhism", "Buddhism", "Jainism",
+                      "Others"],
+        "dominion": "1947-08-15",
+        "republic": "1950-01-26",
+        "geography": {
+            "total_area_sq_km": 3287263,
+            "water_percent": 9.6
+        },
+        "population": {
+            "population_2016": 1324171354,
+            "density_sq_km": 398.3
+        },
+        "currency": "INR",
+        "currency_full": "Indian Rupee",
+        "iso_3166_code": "IN",
+        "calling_code": "+91"
+    },
+    "indexes" : {
+        "indexes" : [
+            ["currency"],
+            ["capital_geolocation"],
+            ["largest_citygeolocation"],
+            ["dominion"],
+            ["republic"],
+            ["geography", "total_area_sq_km"],
+            ["geography", "water_percent"],
+            ["population", "density_sq_km"]
+        ],
+        "lowercase_indexes" : [
+            ["capital"],
+            ["largest_city"],
+            ["currency_full"]
+        ]
+    }
+}
