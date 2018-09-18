@@ -84,7 +84,7 @@ The first one is to use the hash as returned in HTTP Response header
 
 ```bash
 
-$ curl "http://localhost:8001/detail/f81591550e03c743?keytype=rawhex"
+$ curl "http://localhost:8001/detail/19181447080c72c9?keytype=rawhex"
 
 ```
 
