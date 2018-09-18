@@ -229,7 +229,7 @@ stream_selected_node_json(Ids, Filters, SelectedPaths, IsConcurrent, MaxDepth) -
     %% and Key is of type [key_type()] | key_type(), where
     %% key_type() :: binary() | integer() | float() | geo_type()
     %% and geo_type() :: #{<<"type">> := <<"Point">>, <<"coordinates">> := [float(), float()]}
-    ProcessedFilters = lists:foldl(fun(#{<<"key">> := Key,
+    ProcessedFilters = lists:foldr(fun(#{<<"key">> := Key,
                                          <<"key_type">> := KeyType,
                                          <<"index_json_path">> := IndexJsonPath}, AccIn) ->
                                            [{Key, KeyType, IndexJsonPath} | AccIn]
@@ -283,7 +283,7 @@ stream_selected_node_x_erlang_stream_binary(Ids, Filters, SelectedPaths, IsConcu
     %% and Key is of type [key_type()] | key_type(), where
     %% key_type() :: binary() | integer() | float() | geo_type()
     %% and geo_type() :: #{<<"type">> := <<"Point">>, <<"coordinates">> := [float(), float()]}
-    ProcessedFilters = lists:foldl(fun(#{<<"key">> := Key,
+    ProcessedFilters = lists:foldr(fun(#{<<"key">> := Key,
                                          <<"key_type">> := KeyType,
                                          <<"index_json_path">> := IndexJsonPath}, AccIn) ->
                                            [{Key, KeyType, IndexJsonPath} | AccIn]
