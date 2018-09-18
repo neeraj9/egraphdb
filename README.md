@@ -184,6 +184,9 @@ $ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://local
 The following JSON shall be used for performing generic search via
 HTTP POST.
 
+> For the sake of shown range filter there are two
+> filters applied for geography.water_percent.
+
 ```json
 {
     "query": {
@@ -211,6 +214,11 @@ HTTP POST.
                     "key_type": "double",
                     "index_json_paths": ["geography", "water_percent"]
                 },
+                {
+                    "key": [0.6, 10.2],
+                    "key_type": "double",
+                    "index_json_paths": ["geography", "water_percent"]
+                }
             ]
         },
         "selected_paths":
