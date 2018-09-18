@@ -176,46 +176,30 @@ process_generic_search(#{<<"query">> := Query} = _Info, State) ->
 
 process_query(json,
               #{<<"type">> := <<"index">>,
-                <<"conditions">> := Conditions,
+                <<"conditions">> := #{
+                    <<"any">> := AnyConditions,
+                    <<"filters">> := Filters
+                   },
                 <<"selected_paths">> := SelectedPaths} = _Query, State) ->
-    Ids = egraph_api:search_id(Conditions),
-    http_stream_reply(200, <<"application/json">>),
-    http_stream_body(<<"[">>, nofin),
-    lists:foreach(fun(Id) ->
-                         Info = get_detail(Id),
-                         Proplists = lists:foldl(fun(JsonPath, AccIn3) ->
-                                      NestedKey = iolist_to_binary(lists:join(<<".">>, JsonPath)),
-                                      [{NestedKey, nested:get(JsonPath, Info)} | AccIn3]
-                                             end, [], SelectedPaths),
-                         Info2 = maps:from_list(Proplists),
-                         Serialized = jiffy:encode(Info2),
-                         http_stream_body([Serialized, <<",">>], nofin)
-                      end, Ids),
-    http_stream_body(<<"{}]">>, nofin),
-    http_stream_body(<<>>, fin),
+    Ids = egraph_api:search_id(AnyConditions),
+    MaxDepth = -1,  %% do not traverse links
+    IsConcurrent = true,
+    egraph_api:stream_selected_node_json(
+      Ids, Filters, SelectedPaths, IsConcurrent, MaxDepth),
     {stop, State};
 process_query(erlang_stream_binary,
               #{<<"type">> := <<"index">>,
-                <<"conditions">> := Conditions,
+                <<"conditions">> := #{
+                    <<"any">> := AnyConditions,
+                    <<"filters">> := Filters
+                   },
                 <<"selected_paths">> := SelectedPaths} = _Query, State) ->
     IsConcurrent = true,
-    Ids = egraph_api:search_id(Conditions),
-    egraph_api:stream_node_x_erlang_stream_binary(
-      Ids, SelectedPaths, IsConcurrent),
+    Ids = egraph_api:search_id(AnyConditions),
+    egraph_api:stream_selected_node_x_erlang_stream_binary(
+      Ids, Filters, SelectedPaths, IsConcurrent),
     {stop, State}.
-
-get_detail(Id) ->
-    case egraph_detail_model:read_resource(Id) of
-        {ok, [Info]} -> Info;
-        _ -> #{}
-    end.
 
 http_client_accept_content_type(ContentType) ->
     egraph_api:http_client_accept_content_type(ContentType).
-
-http_stream_reply(Code, ContentType) ->
-    egraph_api:http_stream_reply(Code, ContentType).
-
-http_stream_body(Data, Opt) ->
-    egraph_api:http_stream_body(Data, Opt).
 

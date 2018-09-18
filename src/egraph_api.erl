@@ -41,9 +41,9 @@
          ,stream_node_csv/3
          ,stream_node_json/5
          ,stream_node_json/6
-         ,stream_node_json/4
+         ,stream_selected_node_json/5
          ,stream_node_x_erlang_stream_binary/5
-         ,stream_node_x_erlang_stream_binary/3
+         ,stream_selected_node_x_erlang_stream_binary/4
          ,search_id/3
          ,search_id/1
          ,encode_erlang_stream_binary/1
@@ -218,29 +218,48 @@ stream_node_json(Key, KeyType, IndexName, SelectedPaths, IsConcurrent) ->
 
 stream_node_json(Key, KeyType, IndexName, SelectedPaths, IsConcurrent, MaxDepth) ->
     Ids = search_id(Key, KeyType, IndexName),
-    stream_node_json(Ids, SelectedPaths, IsConcurrent, MaxDepth).
+    stream_selected_node_json(Ids, [], SelectedPaths, IsConcurrent, MaxDepth).
 
-stream_node_json(Ids, SelectedPaths, IsConcurrent, MaxDepth) ->
+stream_selected_node_json(Ids, Filters, SelectedPaths, IsConcurrent, MaxDepth) ->
     %% content type must be managed here instead of egraph
     http_stream_reply(200, <<"application/json">>),
     http_stream_body(<<"[">>, nofin),
 
+    %% Note that IndexJsonPath is of type [binary()]
+    %% and Key is of type [key_type()] | key_type(), where
+    %% key_type() :: binary() | integer() | float() | geo_type()
+    %% and geo_type() :: #{<<"type">> := <<"Point">>, <<"coordinates">> := [float(), float()]}
+    ProcessedFilters = lists:foldl(fun(#{<<"key">> := Key,
+                                         <<"key_type">> := KeyType,
+                                         <<"index_json_path">> := IndexJsonPath}, AccIn) ->
+                                           [{Key, KeyType, IndexJsonPath} | AccIn]
+                                   end, [], Filters),
+
     Fun = fun(Info, _AccIn) ->
-             Proplists = lists:foldl(fun(JsonPath, AccIn3) ->
-                          %% NestedKey = iolist_to_binary(lists:join(<<".">>, JsonPath)),
-                          NestedKey = lists:last(JsonPath),
-                          [{NestedKey, egraph_util:convert_to_binary(nested:get(JsonPath, Info))} | AccIn3]
-                                 end, [], SelectedPaths),
-             Info2 = maps:from_list(Proplists),
-             %% get source from Info
-             SourceId = maps:get(<<"source">>, Info),
-             Info3 = Info2#{
-                       <<"__destinations">> =>
-                       recursive_get_destination(
-                         SourceId, 1, MaxDepth)},
-             Serialized = jiffy:encode(Info3),
-             http_stream_body([iolist_to_binary(Serialized), <<",">>], nofin),
-             []
+                  case is_filtered(ProcessedFilters, Info) of
+                      true ->
+                          Proplists = lists:foldl(fun(JsonPath, AccIn3) ->
+                                       %% NestedKey = iolist_to_binary(lists:join(<<".">>, JsonPath)),
+                                       NestedKey = lists:last(JsonPath),
+                                       [{NestedKey, egraph_util:convert_to_binary(nested:get(JsonPath, Info))} | AccIn3]
+                                              end, [], SelectedPaths),
+                          Info2 = maps:from_list(Proplists),
+                          SourceId = maps:get(<<"source">>, Info),
+                          Info3 = case MaxDepth >= 0 of
+                                      false ->
+                                          Info2;
+                                      true ->
+                                          Info2#{
+                                            <<"__destinations">> =>
+                                            recursive_get_destination(
+                                              SourceId, 1, MaxDepth)}
+                                  end,
+                          Serialized = jiffy:encode(Info3),
+                          http_stream_body([iolist_to_binary(Serialized), <<",">>], nofin),
+                          [];
+                      false ->
+                          []
+                  end
           end,
 
     case IsConcurrent of
@@ -256,9 +275,20 @@ stream_node_json(Ids, SelectedPaths, IsConcurrent, MaxDepth) ->
 
 stream_node_x_erlang_stream_binary(Key, KeyType, IndexName, SelectedPaths, IsConcurrent) ->
     Ids = search_id(Key, KeyType, IndexName),
-    stream_node_x_erlang_stream_binary(Ids, SelectedPaths, IsConcurrent).
+    stream_selected_node_x_erlang_stream_binary(
+      Ids, [], SelectedPaths, IsConcurrent).
 
-stream_node_x_erlang_stream_binary(Ids, SelectedPaths, IsConcurrent) ->
+stream_selected_node_x_erlang_stream_binary(Ids, Filters, SelectedPaths, IsConcurrent) ->
+    %% Note that IndexJsonPath is of type [binary()]
+    %% and Key is of type [key_type()] | key_type(), where
+    %% key_type() :: binary() | integer() | float() | geo_type()
+    %% and geo_type() :: #{<<"type">> := <<"Point">>, <<"coordinates">> := [float(), float()]}
+    ProcessedFilters = lists:foldl(fun(#{<<"key">> := Key,
+                                         <<"key_type">> := KeyType,
+                                         <<"index_json_path">> := IndexJsonPath}, AccIn) ->
+                                           [{Key, KeyType, IndexJsonPath} | AccIn]
+                                   end, [], Filters),
+
     %% validate content type
     %%A = http_client_accept_content_type(<<"*/*">>),
     %%B = http_client_accept_content_type(<<"application/x-erlang-stream-binary">>),
@@ -273,12 +303,17 @@ stream_node_x_erlang_stream_binary(Ids, SelectedPaths, IsConcurrent) ->
     http_stream_body(encode_erlang_stream_binary(StreamHeader), nofin),
 
     Fun = fun(Info, _AccIn) ->
-             Cols = lists:foldl(fun(JsonPath, AccIn3) ->
-                          [nested:get(JsonPath, Info) | AccIn3]
-                                 end, [], SelectedPaths),
-             Serialized = encode_erlang_stream_binary(Cols),
-             http_stream_body(Serialized, nofin),
-             []
+                  case is_filtered(ProcessedFilters, Info) of
+                      true ->
+                          Cols = lists:foldl(fun(JsonPath, AccIn3) ->
+                                       [nested:get(JsonPath, Info) | AccIn3]
+                                              end, [], SelectedPaths),
+                          Serialized = encode_erlang_stream_binary(Cols),
+                          http_stream_body(Serialized, nofin),
+                          [];
+                      false ->
+                          []
+                  end
            end,
 
     case IsConcurrent of
@@ -326,4 +361,26 @@ decode_erlang_stream_binary(<<Size:16, V:Size/binary, Rest/binary>> = _Bin) ->
 decode_erlang_stream_binary(_Bin) ->
     partial.
 
+
+
+%% TODO: This will not work for KeyType == <<"geo">>
+is_filtered([], _Info) ->
+    true;
+is_filtered([{[KeyStart, KeyEnd], KeyType, IndexJsonPath} | Rest], Info) ->
+    StartV1 = egraph_shard_util:convert_key_to_datatype(KeyType, KeyStart),
+    EndV1 = egraph_shard_util:convert_key_to_datatype(KeyType, KeyEnd),
+    Value = nested:get(IndexJsonPath, Info),
+    V2 = egraph_shard_util:convert_key_to_datatype(KeyType, Value),
+    case (V2 >= StartV1) andalso (V2 =< EndV1) of
+        true -> is_filtered(Rest, Info);
+        false -> false
+    end;
+is_filtered([{Key, KeyType, IndexJsonPath} | Rest], Info) ->
+    V1 = egraph_shard_util:convert_key_to_datatype(KeyType, Key),
+    Value = nested:get(IndexJsonPath, Info),
+    V2 = egraph_shard_util:convert_key_to_datatype(KeyType, Value),
+    case V2 == V1 of
+        true -> is_filtered(Rest, Info);
+        false -> false
+    end.
 
