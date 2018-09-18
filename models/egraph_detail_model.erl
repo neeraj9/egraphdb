@@ -217,7 +217,7 @@ create_or_update_info(Info, State) ->
                     %% the index already exists
                     OldVersion = maps:get(<<"version">>, DbInfo),
                     %% TODO: Check for failures while updating info
-                    sql_update_record(TableName,
+                    true = sql_update_record(TableName,
                                       OldVersion,
                                       RawKey,
                                       DbStoredDetailsInfo,
