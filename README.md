@@ -35,6 +35,12 @@ $ $(pwd)/_build/default/rel/egraph/bin/egraph console
 Now in a separate window lets run curl commands to store information
 as given in the json further below.
 
+JSON from examples are as follows, which must be used for creating graph nodes.
+
+* [india.json](examples/india.json)
+* [usa.json](examples/usa.json)
+* [japan.json](examples/japan.json)
+
 The name of the json shall be key_data.json (say india.json, or usa.json),
 which will subsequently used to while sending information to EGraphDB.
 
@@ -68,12 +74,6 @@ Possible types available for indexes are as follows:
 
 The above must be kept in mind, because these keywords shall be useful
 when we run queries on the nodes created in the database.
-
-JSON from examples are as follows, which must be used for creating graph nodes.
-
-* [india.json](examples/india.json)
-* [usa.json](examples/usa.json)
-* [japan.json](examples/japan.json)
 
 ### Querying Node Details
 
@@ -146,13 +146,13 @@ from india (see below).
 $ curl "http://localhost:8001/link/india"
 ```
 
-### Fiends for Friends
+### N Depth Graph Traversal
 
 Lets traverse and list all connections originating from a given source
 node with a maxdepth as well (see below).
 
 ```bash
-$ curl "http://localhost:8001/search/india?maxdepth=1"
+$ curl "http://localhost:8001/v1/search/india?maxdepth=1"
 ```
 
 > Note that a value of maxdepth = 1 will search level-2 nodes.
@@ -164,7 +164,7 @@ the datastore shall return one path found via applying DFS on the
 stored graph database.
 
 ```bash
-$ curl "http://localhost:8001/search/india?destination=usa&traverse=dfs"
+$ curl "http://localhost:8001/v1/search/india?destination=usa&traverse=dfs"
 ```
 
 ### A Little More Complex Search
@@ -176,7 +176,7 @@ matching nodes instead of getting everything.
 
 ```bash
 content_type='content-type: application/json'
-$ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://localhost:8001/search"
+$ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://localhost:8001/v1/search"
 ```
 
 > The json within query.json is as shown below.
@@ -184,21 +184,43 @@ $ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://local
 The following JSON shall be used for performing generic search via
 HTTP POST.
 
+> For the sake of shown range filter there are two
+> filters applied for geography.water_percent.
+
 ```json
 {
     "query": {
         "type": "index",
-        "conditions" : [
-            {"key": "INR",
-             "key_type": "text",
-             "index_name": "currency"},
-            {"key": "tokyo",
-             "key_type": "text",
-             "index_name": "capital_lc__"},
-            {"key": [1.0, 50.0],
-             "key_type": "double",
-             "index_name": "water_percent"}
-        ],
+        "conditions" : {
+            "any": [
+                {"key": "INR",
+                 "key_type": "text",
+                 "index_name": "currency"},
+                {"key": "tokyo",
+                 "key_type": "text",
+                 "index_name": "capital_lc__"},
+                {"key": [1.0, 50.0],
+                 "key_type": "double",
+                 "index_name": "water_percent"}
+            ],
+            "filters": [
+                {
+                    "key": "India",
+                    "key_type": "text",
+                    "index_json_paths": ["name"]
+                },
+                {
+                    "key": 9.6,
+                    "key_type": "double",
+                    "index_json_paths": ["geography", "water_percent"]
+                },
+                {
+                    "key": [0.6, 10.2],
+                    "key_type": "double",
+                    "index_json_paths": ["geography", "water_percent"]
+                }
+            ]
+        },
         "selected_paths":
                        [ ["name"],
                          ["religions"],

@@ -174,16 +174,17 @@ start_http_server(PrivDir, Port, HttpRestConfig) ->
 get_routes() ->
     [{'_',
       [
-       %% specific handlers
+       %% v1 handlers
+       {"/v1/search/[:id]", egraph_generic_handler, [egraph_v1_search_model]},
+       %% core handlers
        {"/index/[:id]", egraph_generic_handler, [egraph_index_model]},
        {"/detail/[:id]", egraph_generic_handler, [egraph_detail_model]},
        {"/link/[:id]", egraph_generic_handler, [egraph_link_model]},
        {"/reindex/[:id]", egraph_generic_handler, [egraph_reindex_model]},
-       {"/search/[:id]", egraph_generic_handler, [egraph_search_model]},
        {"/compression/dict/[:id]", egraph_generic_handler, [egraph_dictionary_model]},
        {"/f/[:id]", egraph_generic_handler, [egraph_function_model]},
        {"/fquery/[:id]", egraph_generic_handler, [egraph_fquery_model]},
-       %% Generic handlers
+       %% generic handlers
        {"/api/[:id]", egraph_generic_handler, [egraph_generic_model]},
        {"/stats", egraph_stats_handler, []},
        {"/alive", egraph_alive_handler, []}
