@@ -23,7 +23,7 @@
 %%%
 %%% %CopyrightEnd%
 %%%-------------------------------------------------------------------
--module(egraph_search_model).
+-module(egraph_v1_search_model).
 %% -behaviour(egraph_callback).
 -export([init/0, init/2, terminate/1, % CRUD
          validate/2, create/3, read/2, update/3, delete/2]).

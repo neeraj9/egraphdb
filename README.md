@@ -152,7 +152,7 @@ Lets traverse and list all connections originating from a given source
 node with a maxdepth as well (see below).
 
 ```bash
-$ curl "http://localhost:8001/search/india?maxdepth=1"
+$ curl "http://localhost:8001/v1/search/india?maxdepth=1"
 ```
 
 > Note that a value of maxdepth = 1 will search level-2 nodes.
@@ -164,7 +164,7 @@ the datastore shall return one path found via applying DFS on the
 stored graph database.
 
 ```bash
-$ curl "http://localhost:8001/search/india?destination=usa&traverse=dfs"
+$ curl "http://localhost:8001/v1/search/india?destination=usa&traverse=dfs"
 ```
 
 ### A Little More Complex Search
@@ -176,7 +176,7 @@ matching nodes instead of getting everything.
 
 ```bash
 content_type='content-type: application/json'
-$ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://localhost:8001/search"
+$ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://localhost:8001/v1/search"
 ```
 
 > The json within query.json is as shown below.
