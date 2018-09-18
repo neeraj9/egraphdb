@@ -207,24 +207,24 @@ HTTP POST.
                 {
                     "key": "India",
                     "key_type": "text",
-                    "index_json_paths": ["name"]
+                    "index_json_paths": ["details", "name"]
                 },
                 {
                     "key": 9.6,
                     "key_type": "double",
-                    "index_json_paths": ["geography", "water_percent"]
+                    "index_json_paths": ["details", "geography", "water_percent"]
                 },
                 {
                     "key": [0.6, 10.2],
                     "key_type": "double",
-                    "index_json_paths": ["geography", "water_percent"]
+                    "index_json_paths": ["details", "geography", "water_percent"]
                 }
             ]
         },
         "selected_paths":
-                       [ ["name"],
-                         ["religions"],
-                         ["geography", "water_percent"]
+                       [ ["details", "name"],
+                         ["details", "religions"],
+                         ["details", "geography", "water_percent"]
                        ]
     }
 }
