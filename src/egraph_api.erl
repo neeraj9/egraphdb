@@ -241,7 +241,7 @@ stream_selected_node_json(Ids, Filters, SelectedPaths, IsConcurrent, MaxDepth) -
                           Proplists = lists:foldl(fun(JsonPath, AccIn3) ->
                                        %% NestedKey = iolist_to_binary(lists:join(<<".">>, JsonPath)),
                                        NestedKey = lists:last(JsonPath),
-                                       [{NestedKey, egraph_util:convert_to_binary(nested:get(JsonPath, Info))} | AccIn3]
+                                       [{NestedKey, egraph_util:convert_to_binary(nested:get(JsonPath, Info, null))} | AccIn3]
                                               end, [], SelectedPaths),
                           Info2 = maps:from_list(Proplists),
                           SourceId = maps:get(<<"source">>, Info),
@@ -306,7 +306,7 @@ stream_selected_node_x_erlang_stream_binary(Ids, Filters, SelectedPaths, IsConcu
                   case is_filtered(ProcessedFilters, Info) of
                       true ->
                           Cols = lists:foldl(fun(JsonPath, AccIn3) ->
-                                       [nested:get(JsonPath, Info) | AccIn3]
+                                       [nested:get(JsonPath, Info, null) | AccIn3]
                                               end, [], SelectedPaths),
                           Serialized = encode_erlang_stream_binary(Cols),
                           http_stream_body(Serialized, nofin),
