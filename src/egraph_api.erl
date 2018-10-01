@@ -241,7 +241,7 @@ stream_selected_node_json(Ids, Filters, SelectedPaths, IsConcurrent, MaxDepth) -
                           Proplists = lists:foldl(fun(JsonPath, AccIn3) ->
                                        %% NestedKey = iolist_to_binary(lists:join(<<".">>, JsonPath)),
                                        NestedKey = lists:last(JsonPath),
-                                       [{NestedKey, egraph_util:convert_to_binary(nested:get(JsonPath, Info, null))} | AccIn3]
+                                       [{NestedKey, nested:get(JsonPath, Info, null)} | AccIn3]
                                               end, [], SelectedPaths),
                           Info2 = maps:from_list(Proplists),
                           SourceId = maps:get(<<"source">>, Info),
