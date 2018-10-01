@@ -221,11 +221,11 @@ HTTP POST.
                 }
             ]
         },
-        "selected_paths":
-                       [ ["details", "name"],
-                         ["details", "religions"],
-                         ["details", "geography", "water_percent"]
-                       ]
+        "selected_paths": {
+                             "name":  ["details", "name"],
+                             "religions": ["details", "religions"],
+                             "water_percent": ["details", "geography", "water_percent"]
+                          }
     }
 }
 ```

@@ -162,14 +162,14 @@ stream_node_csv(Ids, SelectedPaths, IsConcurrent) ->
 
     %% content type must be managed here instead of egraph
     http_stream_reply(200, <<"text/csv">>),
-    [_ | CsvHeader] = lists:foldl(fun(E, AccIn) ->
-                                    [<<",">>,lists:last(E) | AccIn]
+    [_ | CsvHeader] = maps:fold(fun(AsName, _E, AccIn) ->
+                                    [<<",">>, AsName | AccIn]
                                   end, [], SelectedPaths),
     http_stream_body(iolist_to_binary(CsvHeader), nofin),
 
     Fun = fun(Info, _AccIn) ->
-             Cols = lists:foldl(fun(JsonPath, AccIn3) ->
-                          [<<",">>, egraph_util:convert_to_binary(nested:get(JsonPath, Info)) | AccIn3]
+             Cols = maps:fold(fun(_AsName, JsonPath, AccIn3) ->
+                          [<<",">>, nested:get(JsonPath, Info) | AccIn3]
                                  end, [], SelectedPaths),
              [_ | Serialized] = Cols,
              http_stream_body([<<"\n">>, iolist_to_binary(Serialized)], nofin),
@@ -238,10 +238,10 @@ stream_selected_node_json(Ids, Filters, SelectedPaths, IsConcurrent, MaxDepth) -
     Fun = fun(Info, _AccIn) ->
                   case is_filtered(ProcessedFilters, Info) of
                       true ->
-                          Proplists = lists:foldl(fun(JsonPath, AccIn3) ->
+                          Proplists = maps:fold(fun(AsName, JsonPath, AccIn3) ->
                                        %% NestedKey = iolist_to_binary(lists:join(<<".">>, JsonPath)),
-                                       NestedKey = lists:last(JsonPath),
-                                       [{NestedKey, nested:get(JsonPath, Info, null)} | AccIn3]
+                                       %% NestedKey = lists:last(JsonPath),
+                                       [{AsName, nested:get(JsonPath, Info, null)} | AccIn3]
                                               end, [], SelectedPaths),
                           Info2 = maps:from_list(Proplists),
                           SourceId = maps:get(<<"source">>, Info),
@@ -299,13 +299,13 @@ stream_selected_node_x_erlang_stream_binary(Ids, Filters, SelectedPaths, IsConcu
     %%            wherein the former has a 16 bit length encoded before
     %%            the bytes which must be erlang term decoded.
     http_stream_reply(200, <<"application/x-erlang-stream-binary">>),
-    StreamHeader = [lists:last(X) || X <- SelectedPaths],
+    StreamHeader = maps:keys(SelectedPaths),
     http_stream_body(encode_erlang_stream_binary(StreamHeader), nofin),
 
     Fun = fun(Info, _AccIn) ->
                   case is_filtered(ProcessedFilters, Info) of
                       true ->
-                          Cols = lists:foldl(fun(JsonPath, AccIn3) ->
+                          Cols = maps:fold(fun(_AsName, JsonPath, AccIn3) ->
                                        [nested:get(JsonPath, Info, null) | AccIn3]
                                               end, [], SelectedPaths),
                           Serialized = encode_erlang_stream_binary(Cols),
