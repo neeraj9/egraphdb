@@ -308,6 +308,6 @@ elvis before it can be submitted.
 
 ## References
 
-* <http://egraph.org>
+* <http://egraphdb.org>
 
 
