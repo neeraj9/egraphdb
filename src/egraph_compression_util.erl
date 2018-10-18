@@ -39,12 +39,10 @@ serialize_data(Details, PreferredCompressionId) ->
 %% of retrieving this info from database each time. Note that
 %% approprate TTL must be associated with the data though.
 serialize_data_internal(Data, undefined) ->
-    case egraph_dictionary_model:read_max_resource() of
-        {ok, M} ->
-            #{ <<"id">> := Key,
-               <<"dictionary">> := Dictionary } = M,
+    case egraph_metacache_server:latest_compression() of
+        {Key, Dictionary} ->
             compress_data(Data, Key, Dictionary);
-        _ ->
+        undefined ->
             %% no compression
             %% TODO: What if the database connection is down then we'll land here
             %% as well, but then there are other issues to tackle.

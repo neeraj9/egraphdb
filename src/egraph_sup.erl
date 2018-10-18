@@ -59,6 +59,11 @@ init(_Specs) ->
                       false ->
                           []
                   end,
+    MetaCacheOpts = [],
+    MetaCacheSpecs = [{egraph_metacache_server,
+                          {egraph_metacache_server, start_link, [MetaCacheOpts]},
+                          permanent, 5000, worker,
+                          [egraph_metacache_server]}],
     FolsomMetricSpecs = [{egraph_folsom_metric_sup,
                           {egraph_folsom_metric_sup, start_link, []},
                           permanent, 5000, supervisor,
@@ -95,6 +100,7 @@ init(_Specs) ->
                          end,
     {ok, { {one_for_one, 1000, 3600},
         MemStoresSupSpec
+         ++ MetaCacheSpecs
          ++ EcrnSupSpec ++ SysmonSpecs ++ FolsomMetricSpecs ++ WorkerSpecs
          ++ DelayedStartupServerSpecs ++ ReindexServerSpecs}}.
 
