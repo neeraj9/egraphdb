@@ -59,16 +59,12 @@ latest_compression() ->
         {ok, Value} ->
             Value;
         _ ->
-            case egraph_dictionary_model:read_max_resource() of
-                {ok, M} ->
-                    #{ <<"id">> := Key,
-                       <<"dictionary">> := Dictionary } = M,
-                    beamparticle_fast_write_store:create_or_update(dict_latest, {Key, Dictionary}),
-                    egraph_zlib_util:load_dicts([{Key, Dictionary}]),
-                    {Key, Dictionary};
-                _ ->
-                    undefined
-            end
+            %% wait for egraph_metacache_server actor to update
+            %% compression dictionary from database if configured.
+            %% In case there is no compression dictionary configured
+            %% then there is no point in refreshing from database
+            %% anyways (each time).
+            undefined
     end.
 
 %%--------------------------------------------------------------------
