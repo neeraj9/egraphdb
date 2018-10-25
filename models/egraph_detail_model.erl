@@ -566,7 +566,10 @@ sql_update_record(TableName, OldVersion, RawKey, DbStoredDetailsInfo, DbStoredIn
             case egraph_sql_util:mysql_write_query(
                    PoolName, Q, Params, TimeoutMsec) of
                 ok -> true;
-                _ -> false
+                DbUpdateError ->
+                    lager:error("RawKey = ~p, Cannot rollback although update failed, DbUpdateError = ~p",
+                                [RawKey, DbUpdateError]),
+                    false
             end;
         _ ->
             %% TODO: rollback the original entry, but
