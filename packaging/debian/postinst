@@ -6,6 +6,14 @@ fi
 
 if [ ! -d "/opt/egraph-data" ]; then
     mkdir -p /opt/egraph-data
+    mkdir -p /opt/egraph-data/schema
+    if [ ! -f "/opt/egraph-data/schema/riak_core.schema" ]; then
+        echo "copy /opt/egraph-data/schema/riak_core.schema from template"
+        cp -p "/opt/egraph-@VERSION@/schema/riak_core.schema" "/opt/egraph-data/schema/riak_core.schema"
+    else
+        echo "/opt/egraph-data/schema/riak_core.schema exists and not modified"
+    fi
+
     chown -R egraphuser:egraphuser /opt/egraph-data
 fi
 
@@ -27,9 +35,12 @@ fi
 if [ ! -f "/opt/egraph-@VERSION@/releases/@VERSION@/sys.config" ]; then
     echo "Created /opt/egraph-@VERSION@/releases/@VERSION@/sys.config from template"
     cp -p "/opt/egraph-@VERSION@/releases/@VERSION@/sys.config.template" "/opt/egraph-@VERSION@/releases/@VERSION@/sys.config"
+    # fix the riak_core paths
+    sed -i -e 's|/tmp/egraph-|/opt/egraph-data/|g' "/opt/egraph-@VERSION@/releases/@VERSION@/sys.config"
 else
     echo "/opt/egraph-@VERSION@/releases/@VERSION@/sys.config exists and not modified"
 fi
+
 
 chown -R egraphuser:egraphuser /opt/egraph-@VERSION@
 
