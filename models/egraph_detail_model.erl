@@ -182,9 +182,10 @@ create_or_update_info(Info, State) ->
     UpdatedDetails = Details#{?EGRAPH_DETAILS_SPECIAL_KEY => egraph_util:convert_to_binary(Key)},
     SerializedDetails = egraph_compression_util:serialize_data(
                           UpdatedDetails, PreferredCompressionId),
+    NewIndexes = #{<<"indexes">> => GenericIndexes,
+                   <<"lowercase_indexes">> => LowercaseIndexes},
     SerializedIndexes = egraph_compression_util:serialize_data(
-                          #{<<"indexes">> => GenericIndexes,
-                            <<"lowercase_indexes">> => LowercaseIndexes},
+                          NewIndexes,
                           PreferredCompressionId),
     HexKey = egraph_util:bin_to_hex_binary(RawKey),
     ReturnLoc = iolist_to_binary(
@@ -217,17 +218,32 @@ create_or_update_info(Info, State) ->
                     %% the index already exists
                     OldVersion = maps:get(<<"version">>, DbInfo),
                     %% TODO: Check for failures while updating info
-                    true = sql_update_record(TableName,
-                                      OldVersion,
-                                      RawKey,
-                                      DbStoredDetailsInfo,
-                                      DbStoredIndexesInfo,
-                                      SerializedDetails,
-                                      SerializedIndexes,
-                                      GenericIndexes,
-                                      LowercaseIndexes,
-                                      UpdatedDetails,
-                                      TimeoutMsec),
+
+                    DetailsHashHexBin = egraph_util:bin_to_hex_binary(
+                                          egraph_util:generate_xxhash_binary(
+                                            egraph_util:convert_to_binary(
+                                              SerializedDetails))),
+                    DbDetailsHash = maps:get(<<"details_hash">>, DbInfo, undefined),
+                    case {DetailsHashHexBin =/= DbDetailsHash,
+                          NewIndexes =/= DbStoredIndexesInfo} of
+                        {true, true} ->
+                            true = sql_update_record(TableName,
+                                              OldVersion,
+                                              RawKey,
+                                              DbStoredDetailsInfo,
+                                              DbStoredIndexesInfo,
+                                              SerializedDetails,
+                                              SerializedIndexes,
+                                              GenericIndexes,
+                                              LowercaseIndexes,
+                                              UpdatedDetails,
+                                              TimeoutMsec);
+                        %% TODO when only indexes changed then optimize
+                        %% update and only write indexes column
+                        _ ->
+                            %% Lets save some write IOPS
+                            ok
+                    end,
                     %% TODO: retrieve ?EGRAPH_DETAILS_SPECIAL_INDEX from
                     %%       DbStoredDetailsInfo and fix indexes (delete old and create new)
                     %%       as required.
