@@ -1,3 +1,23 @@
+-- custom settings in database parameter group
+
+-- Increase the maximum prepared statements so that multiple DOJ
+-- can be prepared for select or insert.
+-- Ref: https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_max_prepared_stmt_count
+--
+-- max_prepared_stmt_count = 65536
+--
+-- Set maximum connection errors because application tries to reconnect
+-- really fast and can result into rejection from database.
+-- max_connect_errors = 18446744073709547520
+--
+-- innodb_flush_method = O_DIRECT
+--
+--
+-- Optimize write by remaining consisteny till the DB is up.
+-- The following setting is DANGEROUS when read-replica is required,
+-- so proceed with CAUTION.
+--    "innodb_flush_log_at_trx_commit = 0"
+--
 
 DROP DATABASE egraph_db;
 DROP USER 'egraph_user';
@@ -275,4 +295,39 @@ CREATE TABLE `egraph_reindex_status` (
 --   KEY `index_name` (`index_name`),
 --   KEY `updated_datetime` (`updated_datetime`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+-- mysql> show global status like "%prepared%";
+-- +---------------------------------------------+-------+
+-- | Variable_name                               | Value |
+-- +---------------------------------------------+-------+
+-- | Performance_schema_prepared_statements_lost | 0     |
+-- | Prepared_stmt_count                         | 123   |
+-- +---------------------------------------------+-------+
+-- 2 rows in set (0.14 sec)
+--
+-- mysql> show variables like "%prepared%";
+-- +------------------------------------------------------+-------+
+-- | Variable_name                                        | Value |
+-- +------------------------------------------------------+-------+
+-- | max_prepared_stmt_count                              | 65535 |
+-- | performance_schema_max_prepared_statements_instances | 0     |
+-- +------------------------------------------------------+-------+
+-- 2 rows in set (0.13 sec)
+--
+-- mysql> SHOW GLOBAL STATUS LIKE 'com_stmt%';
+-- +-------------------------+-----------+
+-- | Variable_name           | Value     |
+-- +-------------------------+-----------+
+-- | Com_stmt_execute        | 324412476 |
+-- | Com_stmt_close          | 238046504 |
+-- | Com_stmt_fetch          | 0         |
+-- | Com_stmt_prepare        | 238296585 |
+-- | Com_stmt_reset          | 0         |
+-- | Com_stmt_send_long_data | 0         |
+-- | Com_stmt_reprepare      | 37277     |
+-- +-------------------------+-----------+
+-- 7 rows in set (0.10 sec)
+--
 
