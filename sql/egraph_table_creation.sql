@@ -12,12 +12,6 @@
 --
 -- innodb_flush_method = O_DIRECT
 --
---
--- Optimize write by remaining consisteny till the DB is up.
--- The following setting is DANGEROUS when read-replica is required,
--- so proceed with CAUTION.
---    "innodb_flush_log_at_trx_commit = 0"
---
 
 DROP DATABASE egraph_db;
 DROP USER 'egraph_user';
