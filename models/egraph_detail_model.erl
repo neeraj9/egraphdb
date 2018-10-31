@@ -224,9 +224,9 @@ create_or_update_info(Info, State) ->
                                             egraph_util:convert_to_binary(
                                               SerializedDetails))),
                     DbDetailsHash = maps:get(<<"details_hash">>, DbInfo, undefined),
-                    case {DetailsHashHexBin =/= DbDetailsHash,
-                          NewIndexes =/= DbStoredIndexesInfo} of
-                        {true, true} ->
+                    AnyChange = (DetailsHashHexBin =/= DbDetailsHash) orelse (NewIndexes =/= DbStoredIndexesInfo),
+                    case AnyChange of
+                        true ->
                             true = sql_update_record(TableName,
                                               OldVersion,
                                               RawKey,
