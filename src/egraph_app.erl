@@ -88,8 +88,14 @@ start(_StartType, _StartArgs) ->
     lager:debug(?LAGER_ATTRS, "[~p] ~p detected PrivDir=~p",
                 [self(), ?MODULE, PrivDir]),
     HttpRestConfig = application:get_env(?APPLICATION_NAME, http_rest, []),
-    Port = proplists:get_value(port, HttpRestConfig, ?DEFAULT_HTTP_PORT),
-    start_http_server(PrivDir, Port, HttpRestConfig),
+    case HttpRestConfig of
+        [] ->
+            %% DONT start the http server
+            ok;
+        _ ->
+            Port = proplists:get_value(port, HttpRestConfig, ?DEFAULT_HTTP_PORT),
+            start_http_server(PrivDir, Port, HttpRestConfig)
+    end,
 
     %% set httpc options
     HttpClientSetOptions = egraph_config_util:generic_http_client_set_options(),
