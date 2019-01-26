@@ -39,7 +39,6 @@
     elarm,
     os_mon,
     syntax_tools,
-    riak_core,
     cuttlefish
    ]},
   {included_applications, [

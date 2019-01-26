@@ -5,7 +5,6 @@ ARCH ?= x86_64
 COMPONENT ?= egraph
 MAKEFILE_PATH := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 PROD_TAR_PATH ?= $(MAKEFILE_PATH)/../../_build/prod/rel/$(COMPONENT)/$(COMPONENT)-$(VERSION).tar.gz
-RIAK_SCHEMA_PATH ?= $(MAKEFILE_PATH)/../../priv/riak_core.schema
 
 .PHONY: prepare package prepare-upgrade package-upgrade
 
@@ -15,7 +14,6 @@ prepare:
 	mkdir -p stage/opt/$(COMPONENT)-$(VERSION)/schema
 	# copy current release to allow downgrade
 	cp -f $(PROD_TAR_PATH) stage/opt/$(COMPONENT)-$(VERSION)/releases/
-	cp -f $(RIAK_SCHEMA_PATH) stage/opt/$(COMPONENT)-$(VERSION)/schema/
 	tar -C stage/opt/$(COMPONENT)-$(VERSION) -xz -f $(PROD_TAR_PATH)
 	mv stage/opt/$(COMPONENT)-$(VERSION)/releases/$(VERSION)/sys.config stage/opt/$(COMPONENT)-$(VERSION)/releases/$(VERSION)/sys.config.template
 	mv stage/opt/$(COMPONENT)-$(VERSION)/releases/$(VERSION)/vm.args stage/opt/$(COMPONENT)-$(VERSION)/releases/$(VERSION)/vm.args.template

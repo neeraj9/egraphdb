@@ -68,11 +68,6 @@ init(_Specs) ->
                           {egraph_folsom_metric_sup, start_link, []},
                           permanent, 5000, supervisor,
                           [egraph_folsom_metric_sup]}],
-    VMaster = {egraph_vnode_master,
-               {riak_core_vnode_master, start_link, [egraph_vnode]},
-               permanent, 5000, worker, [riak_core_vnode_master]},
-    WorkerSpecs = [VMaster],
-
     DelayedOpts = [],
     DelayedStartupServerSpecs = [{egraph_delaystart_server, {
                                    egraph_delaystart_server,
@@ -101,7 +96,7 @@ init(_Specs) ->
     {ok, { {one_for_one, 1000, 3600},
         MemStoresSupSpec
          ++ MetaCacheSpecs
-         ++ EcrnSupSpec ++ SysmonSpecs ++ FolsomMetricSpecs ++ WorkerSpecs
+         ++ EcrnSupSpec ++ SysmonSpecs ++ FolsomMetricSpecs
          ++ DelayedStartupServerSpecs ++ ReindexServerSpecs}}.
 
 

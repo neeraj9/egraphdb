@@ -7,13 +7,6 @@ fi
 if [ ! -d "/opt/egraph-data" ]; then
     mkdir -p /opt/egraph-data
     mkdir -p /opt/egraph-data/schema
-    if [ ! -f "/opt/egraph-data/schema/riak_core.schema" ]; then
-        echo "copy /opt/egraph-data/schema/riak_core.schema from template"
-        cp -p "/opt/egraph-@VERSION@/schema/riak_core.schema" "/opt/egraph-data/schema/riak_core.schema"
-    else
-        echo "/opt/egraph-data/schema/riak_core.schema exists and not modified"
-    fi
-
     chown -R egraphuser:egraphuser /opt/egraph-data
 fi
 

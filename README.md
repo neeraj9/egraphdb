@@ -23,9 +23,6 @@ Lets build and run the project as follows:
 
 $ git clone https://github.com/neeraj9/egraphdb
 $ cd egraphdb
-$ mkdir /tmp/egraph-schema
-$ cp priv/riak_core.schema /tmp/egraph-schema
-$ mkdir /tmp/egraph-ring
 $ ./rebar3 release
 $ $(pwd)/_build/default/rel/egraph/bin/egraph console
 ```

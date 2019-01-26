@@ -91,11 +91,6 @@ start(_StartType, _StartArgs) ->
     Port = proplists:get_value(port, HttpRestConfig, ?DEFAULT_HTTP_PORT),
     start_http_server(PrivDir, Port, HttpRestConfig),
 
-
-    ok = riak_core:register([{vnode_module, egraph_vnode}]),
-    ok = riak_core_node_watcher:service_up(egraph, self()),
-
-
     %% set httpc options
     HttpClientSetOptions = egraph_config_util:generic_http_client_set_options(),
     lager:info("[~p] ~p HttpClientSetOptions = ~p", [self(), ?MODULE, HttpClientSetOptions]),
