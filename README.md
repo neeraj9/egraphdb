@@ -128,6 +128,12 @@ to retrieve node details.
 Lets link India to USA as follows, wherein there are around 1.1 million
 tourists from India to USA in 2017.
 
+* [india\_usa\_link.json](examples/india_usa_link.json)
+
+```bash
+$ curl -X POST -H "$content_type" -d@india_usa_link.json "http://localhost:8001/link"
+```
+
 ```json
 {
     "source" : "india",
@@ -188,9 +194,11 @@ all the conditions are applied with an **OR** condition (or union).
 Additionally, selected node information is retrieved for the
 matching nodes instead of getting everything.
 
+* [query.json](examples/query.json)
+
 ```bash
-content_type='content-type: application/json'
-$ curl -X POST -H "$content_type" -H "$content_type" -d@query.json "http://localhost:8001/v1/search"
+$ content_type='content-type: application/json'
+$ curl -X POST -H "$content_type" -d@query.json "http://localhost:8001/v1/search"
 ```
 
 > The json within query.json is as shown below.

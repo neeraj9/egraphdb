@@ -1,0 +1,40 @@
+{
+    "query": {
+        "type": "index",
+        "conditions" : {
+            "any": [
+                {"key": "INR",
+                 "key_type": "text",
+                 "index_name": "currency"},
+                {"key": "tokyo",
+                 "key_type": "text",
+                 "index_name": "capital_lc__"},
+                {"key": [1.0, 50.0],
+                 "key_type": "double",
+                 "index_name": "water_percent"}
+            ],
+            "filters": [
+                {
+                    "key": "India",
+                    "key_type": "text",
+                    "index_json_path": ["details", "name"]
+                },
+                {
+                    "key": 9.6,
+                    "key_type": "double",
+                    "index_json_path": ["details", "geography", "water_percent"]
+                },
+                {
+                    "key": [0.6, 10.2],
+                    "key_type": "double",
+                    "index_json_path": ["details", "geography", "water_percent"]
+                }
+            ]
+        },
+        "selected_paths": {
+                             "name":  ["details", "name"],
+                             "religions": ["details", "religions"],
+                             "water_percent": ["details", "geography", "water_percent"]
+                          }
+    }
+}
