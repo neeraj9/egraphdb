@@ -17,14 +17,15 @@ systems.
 The high level plan is as follows:
 
 * Integrate into BeamParticle
+* Visual web-frontend to explore data stored in the graph
 * BeamParticle splits into various components largely
   to reduce its footprint
-  (more details in the [BeamParticle](https://github.com/beamparticle/beamparticle) project.
-* Integrate to BeamParticleCore (smallest reprogrammable engine).
-* Support multiple database backends (for example: PgSQL, Microsoft SQL Server, etc).
+  (more details in the [BeamParticle](https://github.com/beamparticle/beamparticle) project
+* Integrate to BeamParticleCore (smallest reprogrammable engine)
+* Support multiple database backends (for example: PgSQL, Microsoft SQL Server, etc)
 * Data partitioning for writing to different database backends
-  to allow explosion in write IOPS beyond a single backend database master.
-* A lot more realtime monitoring.
+  to allow explosion in write IOPS beyond a single backend database master
+* A lot more realtime monitoring
 
 ## Quick Tour
 
