@@ -3,7 +3,7 @@
 %%% @end
 %%% %CopyrightBegin%
 %%%
-%%% Original: beamparticle/beamparticle_cache_util.erl
+%%% Original: egraph/egraph_cache_util.erl
 %%%
 %%% Copyright Neeraj Sharma <neeraj.sharma@alumni.iitg.ernet.in> 2017.
 %%% All Rights Reserved.

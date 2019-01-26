@@ -55,7 +55,7 @@
 
 -spec latest_compression() -> undefined | {integer(), binary()}.
 latest_compression() ->
-    case beamparticle_fast_write_store:read(dict_latest) of
+    case egraph_fast_write_store:read(dict_latest) of
         {ok, Value} ->
             Value;
         _ ->
@@ -157,7 +157,7 @@ handle_info({timeout, _R, tick},
             case Key of
                 CompressionId -> ok;
                 _ ->
-                    beamparticle_fast_write_store:create_or_update(dict_latest, {Key, Dictionary}),
+                    egraph_fast_write_store:create_or_update(dict_latest, {Key, Dictionary}),
                     egraph_zlib_util:load_dicts([{Key, Dictionary}])
             end,
             Ref = erlang:start_timer(TimeoutMsec, self(), tick),

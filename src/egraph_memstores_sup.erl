@@ -1,6 +1,6 @@
 %%%-------------------------------------------------------------------
 %%% @doc
-%%% Supervisor for the beamparticle in-memory stores.
+%%% Supervisor for the egraph in-memory stores.
 %%% @end
 %%% %CopyrightBegin%
 %%%
@@ -21,7 +21,7 @@
 %%%
 %%% %CopyrightEnd%
 %%%-------------------------------------------------------------------
--module(beamparticle_memstores_sup).
+-module(egraph_memstores_sup).
 -behaviour(supervisor).
 
 -export([start_link/0]).
@@ -42,14 +42,14 @@ start_link() ->
 %%%===================================================================
 init(_Args) ->
     Opts = [],
-    SeqWriteStoreSpec = [{beamparticle_seq_write_store,
-                          {beamparticle_seq_write_store, start_link, [Opts]},
+    SeqWriteStoreSpec = [{egraph_seq_write_store,
+                          {egraph_seq_write_store, start_link, [Opts]},
                           permanent, 5000, worker,
-                          [beamparticle_seq_write_store]}],
-    FastWriteStoreSpec = [{beamparticle_fast_write_store,
-                           {beamparticle_fast_write_store, start_link, [Opts]},
+                          [egraph_seq_write_store]}],
+    FastWriteStoreSpec = [{egraph_fast_write_store,
+                           {egraph_fast_write_store, start_link, [Opts]},
                            permanent, 5000, worker,
-                           [beamparticle_fast_write_store]}],
+                           [egraph_fast_write_store]}],
     {ok, { {one_for_one, 1000, 3600},
         SeqWriteStoreSpec ++ FastWriteStoreSpec}}.
 

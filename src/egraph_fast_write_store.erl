@@ -27,10 +27,10 @@
 %%%
 %%% %CopyrightEnd%
 %%%-------------------------------------------------------------------
--module(beamparticle_fast_write_store).
+-module(egraph_fast_write_store).
 -behaviour(gen_server).
 
-%% -include("beamparticle_constants.hrl").
+%% -include("egraph_constants.hrl").
 
 %% API
 -export([start_link/1]).

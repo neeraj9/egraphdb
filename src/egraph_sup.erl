@@ -44,10 +44,10 @@ start_link(Models) ->
 %%% Callbacks
 %%%===================================================================
 init(_Specs) ->
-    MemStoresSupSpec = [{beamparticle_memstores_sup,
-                         {beamparticle_memstores_sup, start_link, []},
+    MemStoresSupSpec = [{egraph_memstores_sup,
+                         {egraph_memstores_sup, start_link, []},
                          permanent, 5000, supervisor,
-                         [beamparticle_memstores_sup]}],
+                         [egraph_memstores_sup]}],
     EcrnSupSpec = [{ecrn_sup, {ecrn_sup, start_link, []},
                    permanent, 5000, supervisor, [ecrn_sup]}],
     SysmonConfig = application:get_env(?APPLICATION_NAME, sysmon, []),

@@ -1286,7 +1286,7 @@ AppendedList = lists:append(UpdatedList, [maps:merge(Map, #{Key => Value})]),
 %%
 %% ```
 %%   A = #{ <<"a">> => [#{<<"b">> => {1,2,3}}, 1, 2, 3] },
-%%   jsx:encode(beamparticle_util:convert_for_json_encoding(A)).
+%%   jsx:encode(egraph_util:convert_for_json_encoding(A)).
 %% ```
 %% TODO handle uuid or binaries which are not printable
 %% NOTE: tuple are converted to list
@@ -1316,8 +1316,8 @@ encode_for_json(K, V, AccIn) ->
 %% xml attributes. Note that the content within the tags are
 %% tried for json decoding and done whenever possible.
 %%
-%% beamparticle_util:convert_xml_to_json_map(<<"<string>{\"a\": 1}</string>">>).
-%% beamparticle_util:convert_xml_to_json_map(<<"<r><string>{\"a\": 1}</string><a>1\n2</a><a>4</a></r>">>).
+%% egraph_util:convert_xml_to_json_map(<<"<string>{\"a\": 1}</string>">>).
+%% egraph_util:convert_xml_to_json_map(<<"<r><string>{\"a\": 1}</string><a>1\n2</a><a>4</a></r>">>).
 convert_xml_to_json_map(Content) when is_binary(Content) ->
     case erlsom:simple_form(binary_to_list(Content)) of
         {ok, {XmlNode, _XmlAttribute, XmlValue}, _} ->

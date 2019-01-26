@@ -30,7 +30,7 @@
 %%%
 %%% %CopyrightEnd%
 %%%-------------------------------------------------------------------
--module(beamparticle_seq_write_store).
+-module(egraph_seq_write_store).
 -behaviour(gen_server).
 
 -include("egraph_constants.hrl").
