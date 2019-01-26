@@ -56,7 +56,7 @@
 
 -define(SERVER, ?MODULE).
 
--define(FAST_WRITE_STORE, fast_write_ets_table).
+-define(FAST_WRITE_STORE, egraph_fast_write_ets_table).
 
 -record(state, {
           tbl  %% ets table

@@ -63,7 +63,7 @@
 
 -define(SERVER, ?MODULE).
 
--define(SEQ_WRITE_STORE, seq_write_ets_table).
+-define(SEQ_WRITE_STORE, egraph_seq_write_ets_table).
 
 -record(state, {
           tbl  %% ets table
