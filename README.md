@@ -3,6 +3,8 @@
 Graph Database for building massively scalable and fault tolerant
 systems.
 
+> IMPORTANT: riak-core is removed for now.
+
 ## Overview
 
 
