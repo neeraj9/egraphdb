@@ -38,8 +38,7 @@
     otter,
     elarm,
     os_mon,
-    syntax_tools,
-    cuttlefish
+    syntax_tools
    ]},
   {included_applications, [
                            erlcron,
