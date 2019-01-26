@@ -24,7 +24,7 @@
 %%%
 %%% %CopyrightEnd%
 %%%-------------------------------------------------------------------
--module(log_utils).
+-module(egraph_log_utils).
 -export([create_log_req/2]).
 -export([req_log/4]).
 -export([publish_counter/2,

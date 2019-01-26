@@ -155,7 +155,7 @@ start_http_server(PrivDir, Port, HttpRestConfig) ->
                 ],
                 #{env => #{dispatch => Dispatch},
                   %% TODO: stream_handlers => [stream_http_rest_log_handler],
-                  %%onresponse => fun log_utils:req_log/4,
+                  %%onresponse => fun egraph_log_utils:req_log/4,
                   max_keepalive => MaxKeepAlive});
         false ->
             {ok, _} = cowboy:start_clear(http, [
@@ -166,7 +166,7 @@ start_http_server(PrivDir, Port, HttpRestConfig) ->
                 ],
                 #{env => #{dispatch => Dispatch},
                   %% TODO: stream_handlers => [stream_http_rest_log_handler],
-                  %%onresponse => fun log_utils:req_log/4,
+                  %%onresponse => fun egraph_log_utils:req_log/4,
                   max_keepalive => MaxKeepAlive})
     end.
 

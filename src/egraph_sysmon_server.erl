@@ -187,7 +187,7 @@ code_change(_OldVsn, State, _Extra) ->
 do_http_metrics(Prefix) ->
     try
         EgraphListenerActiveConnections = ranch_server:count_connections(http),
-        log_utils:publish_gauge(
+        egraph_log_utils:publish_gauge(
           iolist_to_binary(
             [Prefix, <<"http.egraph_listener.active_connections">>]),
           EgraphListenerActiveConnections),
@@ -211,7 +211,7 @@ do_nstat_metrics(Prefix) ->
         maps:fold(fun(K, V, AccIn) ->
                           Metric = iolist_to_binary(
                                      [Prefix, <<"kernel.net.">>, K]),
-                          log_utils:publish_gauge(Metric, V),
+                          egraph_log_utils:publish_gauge(Metric, V),
                           %% [{Metric, V} | AccIn]
                           AccIn
                   end, [], maps:get(<<"kernel">>, Info))
@@ -226,15 +226,15 @@ do_vm_metrics(_Prefix, [], ArchivedCounters) ->
     ArchivedCounters;
 do_vm_metrics(Prefix, [{cpu, avg1}|Spec], ArchivedCounters) ->
     Value = cpu_sup:avg1() / 256,
-    log_utils:publish_gauge(iolist_to_binary([Prefix, <<"cpu.avg1">>]), Value),
+    egraph_log_utils:publish_gauge(iolist_to_binary([Prefix, <<"cpu.avg1">>]), Value),
     do_vm_metrics(Prefix, Spec, ArchivedCounters);
 do_vm_metrics(Prefix, [{cpu, avg5}|Spec], ArchivedCounters) ->
     Value = cpu_sup:avg5() / 256,
-    log_utils:publish_gauge(iolist_to_binary([Prefix, <<"cpu.avg5">>]), Value),
+    egraph_log_utils:publish_gauge(iolist_to_binary([Prefix, <<"cpu.avg5">>]), Value),
     do_vm_metrics(Prefix, Spec, ArchivedCounters);
 do_vm_metrics(Prefix, [{cpu, avg15}|Spec], ArchivedCounters) ->
     Value = cpu_sup:avg5() / 256,
-    log_utils:publish_gauge(iolist_to_binary([Prefix, <<"cpu.avg15">>]), Value),
+    egraph_log_utils:publish_gauge(iolist_to_binary([Prefix, <<"cpu.avg15">>]), Value),
     do_vm_metrics(Prefix, Spec, ArchivedCounters);
 do_vm_metrics(Prefix, [{cpu, util}|Spec], ArchivedCounters) ->
     cpu_sup:nprocs(),
@@ -247,7 +247,7 @@ do_vm_metrics(Prefix, [{cpu, util}|Spec], ArchivedCounters) ->
                     Name = iolist_to_binary(
                              [Prefix, <<"cpu.">>, integer_to_binary(CpuNum),
                               <<".">>, atom_to_binary(F, utf8)]),
-                    log_utils:publish_gauge(Name, V)
+                    egraph_log_utils:publish_gauge(Name, V)
                               end, Busy)
                           end, CpuUtilization),
             %% Compute cumulative cpu utilization and publish that as well
@@ -265,13 +265,13 @@ do_vm_metrics(Prefix, [{cpu, util}|Spec], ArchivedCounters) ->
             maps:fold(fun(K, V, _) ->
                 Name = iolist_to_binary(
                          [Prefix, <<"cpu.total.">>, atom_to_binary(K, utf8)]),
-                log_utils:publish_gauge(Name, V / Ncpu)
+                egraph_log_utils:publish_gauge(Name, V / Ncpu)
                       end, undefined, CumulativeCpuUtil),
             CumulativeCpuBusy = maps:fold(fun(_K, V, OldVal) ->
                 OldVal + V
                                           end, 0, CumulativeCpuUtil),
             Name = iolist_to_binary([Prefix, <<"cpu.total">>]),
-            log_utils:publish_gauge(Name, CumulativeCpuBusy / Ncpu);
+            egraph_log_utils:publish_gauge(Name, CumulativeCpuBusy / Ncpu);
         _ -> ok
     end,
     do_vm_metrics(Prefix, Spec, ArchivedCounters);
@@ -283,13 +283,13 @@ do_vm_metrics(Prefix, [{io, all}|Spec], ArchivedCounters) ->
                           undefined -> InputBytes;
                           InputOldCount -> InputBytes - InputOldCount
                       end,
-    log_utils:publish_gauge(Ninput, InputDeltaCount),
+    egraph_log_utils:publish_gauge(Ninput, InputDeltaCount),
     Noutput = iolist_to_binary([Prefix, <<"vm.io.out">>]),
     OutputDeltaCount = case maps:get(Noutput, ArchivedCounters, undefined) of
                            undefined -> OutputBytes;
                            OutputOldCount -> OutputBytes - OutputOldCount
                        end,
-    log_utils:publish_gauge(Noutput, OutputDeltaCount),
+    egraph_log_utils:publish_gauge(Noutput, OutputDeltaCount),
     UpdatedArchivedCounters = ArchivedCounters#{
         Ninput => InputBytes,
         Noutput => OutputBytes
@@ -306,14 +306,14 @@ do_vm_metrics(Prefix, [{scheduler, util}|Spec], ArchivedCounters) ->
         N = iolist_to_binary(
               [Prefix, <<"vm.scheduler.">>, integer_to_binary(Id)]),
         %%lager:info("SchId=~p, Percent=~p", [N, Percent * 100]),
-        log_utils:publish_gauge(N, Percent * 100)
+        egraph_log_utils:publish_gauge(N, Percent * 100)
                   end, PerSchedulerDelta),
     {A, T} = lists:foldl(fun({{_, A0, T0}, {_, A1, T1}}, {Ai, Ti}) ->
         {Ai + (A1 - A0), Ti + (T1 - T0)} end, {0, 0}, lists:zip(Ts0, Ts1)),
     TotalSchedulerUtilization = A/T,
     %%lager:info("TotalSchedulerUtilization=~p",
     %%[TotalSchedulerUtilization * 100]),
-    log_utils:publish_gauge(
+    egraph_log_utils:publish_gauge(
       iolist_to_binary(
         [Prefix, <<"vm.scheduler.total">>]), TotalSchedulerUtilization * 100),
     UpdatedArchivedCounters = ArchivedCounters#{scheduler => Ts1},
@@ -326,13 +326,13 @@ do_vm_metrics(Prefix, [{run_queue, all}|Spec], ArchivedCounters) ->
     %% run_queue is more expensive, so dont use it
     Value = erlang:statistics(total_run_queue_lengths),
     N = iolist_to_binary([Prefix, <<"vm.run_queue">>]),
-    log_utils:publish_gauge(N, Value),
+    egraph_log_utils:publish_gauge(N, Value),
     do_vm_metrics(Prefix, Spec, ArchivedCounters);
 do_vm_metrics(Prefix, [{memory, Type}|Spec], ArchivedCounters) ->
     Value = erlang:memory(Type),
     N = iolist_to_binary(
           [Prefix, <<"vm.memory.">>, atom_to_binary(Type, utf8)]),
-    log_utils:publish_gauge(N, Value),
+    egraph_log_utils:publish_gauge(N, Value),
     do_vm_metrics(Prefix, Spec, ArchivedCounters);
 do_vm_metrics(Prefix, [{disk, all} | Spec], ArchivedCounters) ->
     DiskData = disksup:get_disk_data(),
@@ -361,7 +361,7 @@ do_vm_metrics(Prefix, [{disk, all} | Spec], ArchivedCounters) ->
                         N = iolist_to_binary(
                               [Prefix, <<"disk.used_percent.">>, PathName]),
                         Value = UsedPercent,
-                        log_utils:publish_gauge(N, Value);
+                        egraph_log_utils:publish_gauge(N, Value);
                     false ->
                         ok
                 end
