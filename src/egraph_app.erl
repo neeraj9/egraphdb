@@ -73,15 +73,6 @@ start(_StartType, _StartArgs) ->
                             CacheOptions, CacheName)
                   end, Caches),
 
-    %% start marina when configured
-    case application:get_all_env(marina) of
-        [{_, []}] ->
-            %% empty configuration, so do not start
-            ok;
-        _ ->
-            application:ensure_all_started(marina)
-    end,
-
     % TODO only when running in production
     PrivDir = code:priv_dir(?APPLICATION_NAME),
     %PrivDir = "priv",
