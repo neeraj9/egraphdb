@@ -174,13 +174,14 @@ create_or_update_info(Info, State) ->
                   {false, State}
           end
     catch
-        ExceptionClass:ExceptionError:StackTrace ->
-            lager:error("[Exception]: ~p:~p:~p", [ExceptionClass, ExceptionError, StackTrace]),
+        ExceptionClass:ExceptionError ?CAPTURE_STACKTRACE ->
+            Stacktrace = ?GET_STACKTRACE,
+            lager:error("[Exception]: ~p:~p:~p", [ExceptionClass, ExceptionError, Stacktrace]),
             {#{<<"status">> => <<"error">>,
                <<"exception">> => #{
                    <<"class">> => egraph_util:convert_to_binary(ExceptionClass),
                    <<"error">> => egraph_util:convert_to_binary(ExceptionError),
-                   <<"stacktrace">> => list_to_binary(io_lib:format("~p", [StackTrace]))
+                   <<"stacktrace">> => list_to_binary(io_lib:format("~p", [Stacktrace]))
                   }}, State}
             %%{false, State}
     end.

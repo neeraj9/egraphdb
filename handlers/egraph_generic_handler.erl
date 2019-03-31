@@ -293,11 +293,12 @@ handle_http_post_request(Method, Body, QsProplist, R, Id, M, Req1, State, S, Con
                 {false, Req1, State#state{model_state=S2}}
         end
     catch
-        error:badarg:StackTrace ->
+        error:badarg ?CAPTURE_STACKTRACE ->
+            Stacktrace = ?GET_STACKTRACE,
             erlang:erase(?HTTP_REQ_KEY),
             erlang:erase(?HTTP_IS_STREAM),
             lager:error(?LAGER_ATTRS, "[~p] ~p error:badarg stacktrace = ~p",
-                        [self(), ?MODULE, StackTrace]),
+                        [self(), ?MODULE, Stacktrace]),
             {false, Req1, State}
     end.
 

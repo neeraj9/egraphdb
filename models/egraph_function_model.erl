@@ -177,8 +177,11 @@ create_or_update_info(Info, State) ->
             end
     end
     catch
-        ExceptionClass:ExceptionError:StackTrace ->
-            lager:error("[Exception]: ~p:~p:~p", [ExceptionClass,ExceptionError,StackTrace])
+        ExceptionClass:ExceptionError ?CAPTURE_STACKTRACE ->
+                       Stacktrace = ?GET_STACKTRACE,
+                       lager:error("[Exception]: ~p:~p:~p", [ExceptionClass,
+                                                             ExceptionError,
+                                                             Stacktrace])
     end,
 
     %% ---------------------------------------------------------------

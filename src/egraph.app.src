@@ -8,7 +8,7 @@
 {application, egraph,
  [
   {description, "EGraph."},
-  {vsn, "0.1.0"},
+  {vsn, "0.2.0"},
   {registered, []},
   {applications,
    [
@@ -29,11 +29,8 @@
     folsom_cowboy,
     folsom,
     palma,
-    mongodb,
     mysql,
     cache,
-    eredis,
-    amqp_client,
     fuse,
     otter,
     elarm,
