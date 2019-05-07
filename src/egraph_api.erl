@@ -305,9 +305,7 @@ stream_selected_node_x_erlang_stream_binary(Ids, Filters, SelectedPaths, IsConcu
     Fun = fun(Info, _AccIn) ->
                   case is_filtered(ProcessedFilters, Info) of
                       true ->
-                          Cols = maps:fold(fun(_AsName, JsonPath, AccIn3) ->
-                                       [nested:get(JsonPath, Info, null) | AccIn3]
-                                              end, [], SelectedPaths),
+                          Cols = [nested:get(maps:get(Key, SelectedPaths), Info, null) || Key <- StreamHeader],
                           Serialized = encode_erlang_stream_binary(Cols),
                           http_stream_body(Serialized, nofin),
                           [];
