@@ -1,5 +1,11 @@
 # EGraphDB
 
+## MOVED
+
+Moved to new home https://github.com/egraphdb/egraphdb
+
+## README
+
 Graph Database for building massively scalable and fault tolerant
 systems.
 
