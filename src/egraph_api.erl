@@ -299,15 +299,15 @@ stream_selected_node_x_erlang_stream_binary(Ids, Filters, SelectedPaths, IsConcu
     %%            wherein the former has a 16 bit length encoded before
     %%            the bytes which must be erlang term decoded.
     http_stream_reply(200, <<"application/x-erlang-stream-binary">>),
-    StreamHeader = maps:keys(SelectedPaths),
+    StreamHeader = maps:fold(fun(K, _, AccIn) -> [K | AccIn] end, [], SelectedPaths),
     http_stream_body(encode_erlang_stream_binary(StreamHeader), nofin),
 
     Fun = fun(Info, _AccIn) ->
                   case is_filtered(ProcessedFilters, Info) of
                       true ->
                           Cols = maps:fold(fun(_AsName, JsonPath, AccIn3) ->
-                                       [nested:get(JsonPath, Info, null) | AccIn3]
-                                              end, [], SelectedPaths),
+                              [nested:get(JsonPath, Info, null) | AccIn3]
+                                           end, [], SelectedPaths),
                           Serialized = encode_erlang_stream_binary(Cols),
                           http_stream_body(Serialized, nofin),
                           [];
